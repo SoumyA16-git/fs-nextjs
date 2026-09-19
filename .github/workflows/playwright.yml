@@ -58,6 +58,14 @@ jobs:
           echo "NEXTAUTH_URL=$AUTH_URL" >> .env.test
           echo "NODE_ENV=test" >> .env.test
 
+          cp .env.test .env.local
+          cp .env.test .env
+
+          echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
+          echo "NEXTAUTH_SECRET=$AUTH_SECRET" >> $GITHUB_ENV
+          echo "NEXTAUTH_URL=$AUTH_URL" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+
       - name: Verify environment setup
         run: |
           echo "Checking .env.test file:"
@@ -70,9 +78,17 @@ jobs:
           fi
 
       - name: Run database migrations
+        env:
+          NODE_ENV: test
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx drizzle-kit push
 
       - name: Run Playwright tests
+        env:
+          NODE_ENV: test
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ env.NEXTAUTH_URL }}
         run: npx playwright test
 
       - uses: actions/upload-artifact@v4

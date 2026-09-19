@@ -1,16 +1,26 @@
-﻿import { defineConfig } from "drizzle-kit"
+import { defineConfig } from "drizzle-kit"
 import * as dotenv from "dotenv"
+import * as fs from "fs"
 
-// Load .env.test in test environment, otherwise .env.local
-const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env.local"
-dotenv.config({ path: envFile })
+if (fs.existsSync(".env.test")) {
+  dotenv.config({ path: ".env.test" })
+}
+if (fs.existsSync(".env.local")) {
+  dotenv.config({ path: ".env.local" })
+}
+if (fs.existsSync(".env")) {
+  dotenv.config({ path: ".env" })
+}
+
+const connectionUrl =
+  process.env.DATABASE_URL ||
+  "postgresql://postgres:postgres@localhost:5432/test_db?sslmode=disable"
 
 export default defineConfig({
   schema: "./db/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: connectionUrl,
   },
 })
-
