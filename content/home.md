@@ -12,4 +12,4 @@ A modern full stack application built with Next.js, React Server Components, Dri
 
 ---
 
-Explore the latest [blogs](/blogs) or check out active [users](/users) in the community.
+Explore the latest [blog posts](/blogs) or check out [active users](/users) in the community.
